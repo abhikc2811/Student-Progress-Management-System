@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import illustration from '../assets/admin-illustration.avif'; // update the path if needed
+import illustration from '../assets/admin-illustration.avif';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -21,24 +21,21 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="flex h-screen w-screen overflow-hidden">
-      {/* Left - Illustration */}
-      <div className="w-1/2 bg-white flex items-center justify-center p-8">
+    <div className="flex md:flex-row h-[calc(100vh-64px)] overflow-hidden">
+      {/* Left side image */}
+      <div className="hidden md:flex w-1/2 items-center justify-center bg-white">
         <img
           src={illustration}
           alt="Login Illustration"
-          className="w-full max-w-[500px] h-auto object-contain"
+          className="w-full max-w-md object-contain px-6"
         />
       </div>
 
-      {/* Vertical Separator */}
-      <div className="w-[1px] bg-gray-300 h-[80%] self-center"></div>
-
-      {/* Right - Login Form */}
-      <div className="w-1/2 flex flex-col justify-center items-center px-6 md:px-16 bg-gray-50">
+      {/* Right - Form */}
+      <div className="w-full md:w-1/2 flex items-center justify-center bg-gray-50 p-6">
         <div className="w-full max-w-md">
-          <h2 className="text-3xl font-semibold text-gray-800 mb-8 border-b-2 border-purple-500 w-fit">
-            Login as a Admin User
+          <h2 className="text-3xl font-semibold text-gray-800 mb-6 border-b-2 border-purple-500 w-fit">
+            Login as Admin
           </h2>
 
           {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
@@ -82,10 +79,10 @@ const LoginPage = () => {
 
           <div className="text-sm text-gray-500 mt-6 space-y-1">
             <p>
-              <a href="#" className="hover:underline">Forget your password?</a>
+              <a href="#" className="hover:underline">Forgot your password?</a>
             </p>
             <p>
-              <a href="#" className="text-purple-600 hover:underline">Get help Signed in.</a>
+              <a href="#" className="text-purple-600 hover:underline">Get help signing in</a>
             </p>
           </div>
 
