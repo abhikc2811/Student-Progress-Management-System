@@ -1,17 +1,23 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import LoginPage from './pages/LoginPage';
-import Dashboard from './pages/Dashboard'; 
 import ThemeContextProvider from './context/ThemeContext';
-import Navbar from './components/Navbar';
+import LoginPage from './pages/LoginPage';
+import Dashboard from './pages/Dashboard';
+import StudentPage from './pages/StudentPage';
+import SettingsPage from './pages/SettingsPage';
+import DashboardLayout from './layout/DashboardLayout';
 
 function App() {
   return (
     <ThemeContextProvider>
       <Router>
-        <Navbar />
         <Routes>
           <Route path="/" element={<LoginPage />} />
-          <Route path="/dashboard" element={<Dashboard />} />
+
+          <Route element={<DashboardLayout />} >
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/students"   element={<StudentPage />} />
+            <Route path="/settings"   element={<SettingsPage />} />
+          </Route>
         </Routes>
       </Router>
     </ThemeContextProvider>
