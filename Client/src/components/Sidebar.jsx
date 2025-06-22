@@ -5,21 +5,24 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import LogoutIcon from '@mui/icons-material/Logout';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { useTheme } from '@mui/material/styles'; // To access theme colors
+import { useTheme } from '@mui/material/styles';
+import { useAuthStore } from '../store/useAuthStore';
 
 const navItems = [
-  { label: 'Dashboard', icon: <DashboardIcon />, path: '/' },
+  { label: 'Dashboard', icon: <DashboardIcon />, path: '/dashboard' },
   { label: 'Students', icon: <PeopleIcon />, path: '/students' },
   { label: 'Settings', icon: <SettingsIcon />, path: '/settings' },
 ];
 
 const Sidebar = () => {
   const navigate = useNavigate();
-  const theme = useTheme(); // Access current theme
+  const theme = useTheme(); 
 
-  const handleLogout = () => {
-    // Add logout logic here (clear tokens, etc.)
-    navigate('/login');
+  const logout = useAuthStore(state => state.logout);
+
+  const handleLogout = async () => {
+    await logout();
+    navigate('/');
   };
 
   return (
