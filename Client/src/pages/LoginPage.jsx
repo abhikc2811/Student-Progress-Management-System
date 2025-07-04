@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import Topbar from '../components/Topbar';
 import illustration from '../assets/admin-illustration.avif';
 import { useAuthStore } from '../store/useAuthStore';
@@ -7,9 +6,8 @@ import { useAuthStore } from '../store/useAuthStore';
 const LoginPage = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const navigate = useNavigate();
 
-  const { login, loggingIn, isAuthenticated } = useAuthStore();
+  const { login, loggingIn } = useAuthStore();
 
   const handleSubmit = async (e) => {
     e.preventDefault();

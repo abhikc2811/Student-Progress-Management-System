@@ -39,7 +39,7 @@ const Sidebar = () => {
       {/* Top Section with Logo */}
       <Box>
         <Box sx={{ display: 'flex', justifyContent: 'center'}}>
-          <ManageAccountsIcon sx={{ fontSize: 48, color: theme.palette.primary.main }} />
+          <ManageAccountsIcon sx={{ fontSize: 44, color: theme.palette.primary.main }} />
         </Box>
 
         <List>
