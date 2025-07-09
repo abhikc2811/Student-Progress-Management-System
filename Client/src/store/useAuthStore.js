@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { axiosInstance } from '../api/axios.js';
 import { toast } from "react-hot-toast";
 
-export const useAuthStore = create((set, get) => ({
+export const useAuthStore = create((set) => ({
   isAuthenticated: false,
   admin: null,
   checkingAuth: false,
@@ -67,7 +67,6 @@ export const useAuthStore = create((set, get) => ({
   manualSync: async () => {
     try {
       await axiosInstance.post('/admin/sync-codeforces', {}, { withCredentials: true });
-      await get().getDashboardStats();
       toast.success('Manual sync complete');
     } catch (err) {
       console.error('Sync failed:', err);
@@ -78,7 +77,6 @@ export const useAuthStore = create((set, get) => ({
   sendReminder: async () => {
     try {
       await axiosInstance.post('/admin/test-reminder', {}, { withCredentials: true });
-      await get().getDashboardStats();
       toast.success('Reminders sent');
     } catch (err) {
       console.error('Reminder failed:', err);

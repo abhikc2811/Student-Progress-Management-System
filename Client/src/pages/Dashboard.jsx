@@ -3,7 +3,6 @@ import { useAuthStore } from '../store/useAuthStore';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '@mui/material';
-import { axiosInstance } from '../api/axios.js';  
 
 const COLORS = ['#4CAF50', '#F44336']; 
 
@@ -15,6 +14,8 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const theme = useTheme();
 
+  const [syncing, setSyncing] = useState(false);
+
   const isDark = theme.palette.mode === 'dark';
   const cardBg = isDark ? 'bg-stone-800' : 'bg-stone-50';
   const textColor = isDark ? 'text-white' : 'text-gray-700';
@@ -22,13 +23,19 @@ const Dashboard = () => {
 
   useEffect(() => {
     getDashboardStats();
-  }, [getDashboardStats]);
+  }, []);
 
-    return (
+  const handleManualSync = async () => {
+    setSyncing(true);
+    await manualSync();
+    await getDashboardStats();
+    setSyncing(false);
+  };
+
+  return (
     <div className="p-8 space-y-10 min-h-screen">
       <h1 className="text-4xl font-bold">📊 Dashboard Overview</h1>
 
-      {/* Summary Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <Card title="Total Students" value={stats.totalStudents} color="bg-indigo-600" />
         <Card title="Avg Rating" value={stats.avgRating != null ? stats.avgRating.toFixed(1) : '—'} color="bg-purple-600" />
@@ -36,7 +43,6 @@ const Dashboard = () => {
         <Card title="Last Synced" value={stats.lastSync ? new Date(stats.lastSync).toLocaleString() : '—'} color="bg-green-600" />
       </div>
 
-      {/* Solved Today */}
       <div className={`${cardBg} p-6 shadow-md rounded-lg mb-8`}>
         <h2 className={`text-2xl font-bold ${textColor}`}>🧠 Problems Solved Today</h2>
         <p className="mt-4 text-5xl font-extrabold text-indigo-600 tracking-wider">
@@ -45,7 +51,6 @@ const Dashboard = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Problems Per Day */}
         <section className={`${cardBg} p-6 shadow rounded-xl`}>
           <h2 className={`text-xl font-semibold mb-3 ${textColor}`}>
             📅 Problems Solved (Last 30 Days)
@@ -69,7 +74,6 @@ const Dashboard = () => {
           </div>
         </section>
 
-        {/* Active vs Inactive */}
         <section className={`${cardBg} p-6 shadow rounded-xl`}>
           <h2 className={`text-xl font-semibold mb-4 ${textColor}`}>
             🧑‍💻 Active vs Inactive
@@ -98,7 +102,6 @@ const Dashboard = () => {
         </section>
       </div>
 
-      {/* Recent Activity */}
       <section className={`${cardBg} p-6 shadow rounded-xl`}>
         <h2 className={`text-xl font-semibold mb-4 ${textColor}`}>📝 Recent Activity</h2>
         <ul className={`list-disc list-inside space-y-2 ${subTextColor}`}>
@@ -117,13 +120,13 @@ const Dashboard = () => {
         </ul>
       </section>
 
-      {/* Admin Actions */}
       <div className="flex space-x-4">
         <button
-          onClick={manualSync}
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          onClick={handleManualSync}
+          disabled={syncing}
+          className={`px-4 py-2 ${syncing ? 'bg-blue-400' : 'bg-blue-600'} text-white rounded hover:bg-blue-700`}
         >
-          🔄 Manual Sync
+          {syncing ? '🔄 Syncing...' : '🔄 Manual Sync'}
         </button>
         <button
           onClick={sendReminder}

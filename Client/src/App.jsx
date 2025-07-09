@@ -1,3 +1,4 @@
+// App.jsx
 import { BrowserRouter as Router, Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import ThemeContextProvider from './context/ThemeContext';
 import LoginPage from './pages/LoginPage';
@@ -11,6 +12,11 @@ import { useAuthStore } from './store/useAuthStore';
 import { useEffect } from 'react';
 import { Loader } from "lucide-react";
 
+const RequireAuth = () => {
+  const { isAuthenticated } = useAuthStore();
+  return isAuthenticated ? <Outlet /> : <Navigate to="/" replace />;
+};
+
 const App = () => {
   const { admin, checkingAuth, checkAuth, isAuthenticated } = useAuthStore();
 
@@ -21,14 +27,10 @@ const App = () => {
   if (checkingAuth) {
     return (
       <div className="flex items-center justify-center h-screen">
-        <Loader className="size-10 animate-spin" />
+        <Loader size={48} className="animate-spin" />
       </div>
     );
   }
-
-  const RequireAuth = () => {
-    return isAuthenticated ? <Outlet /> : <Navigate to="/" replace />;
-  };
 
   return (
     <ThemeContextProvider>
