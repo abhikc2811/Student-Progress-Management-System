@@ -5,7 +5,7 @@ const submissionSchema = new mongoose.Schema({
   problemId:    { type: String },
   contestId:    { type: Number },
   index:        { type: String },
-  name:         { type: String },
+  problemName:         { type: String },
   rating:       { type: Number },
   verdict:      { type: String },
   creationTimeSeconds: { type: Number, required: true }

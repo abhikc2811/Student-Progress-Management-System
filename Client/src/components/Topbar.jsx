@@ -15,8 +15,8 @@ const Topbar = ({ onDrawerToggle }) => {
         backdropFilter: 'blur(10px)',
         backgroundColor:
           theme.palette.mode === 'light'
-            ? 'rgba(255, 255, 255, 0.8)'
-            : 'rgba(18, 18, 18, 0.7)',
+            ? 'rgba(249, 249, 249, 0.8)'
+            : 'rgba(38, 38, 38, 0.7)',
         borderBottom: '1px solid',
         borderColor: theme.palette.mode === 'light' ? '#e0e0e0' : '#2e2e2e',
         transition: 'all 0.3s ease',

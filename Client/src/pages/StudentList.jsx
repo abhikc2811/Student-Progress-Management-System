@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CSVLink } from 'react-csv';
+import { useTheme } from '@mui/material/styles';
 import StudentRow from '../components/StudentRow.jsx';
 import useStudentStore from '../store/useStudentStore.js';
 
@@ -8,6 +9,8 @@ const StudentList = () => {
   const students = useStudentStore(state => state.students);
   const getAllStudents = useStudentStore(state => state.getAllStudents);
   const navigate = useNavigate();
+  const theme = useTheme();
+  const isDark = theme.palette.mode === 'dark';
 
   useEffect(() => {
     getAllStudents();
@@ -27,7 +30,9 @@ const StudentList = () => {
   return (
     <div className="p-4">
       <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold">Students</h1>
+        <h1 className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
+          Students
+        </h1>
         <div className="space-x-2">
           <button
             onClick={handleAdd}
@@ -45,9 +50,23 @@ const StudentList = () => {
           </CSVLink>
         </div>
       </div>
+
       <div className="overflow-x-auto">
-        <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
-          <thead className="bg-gray-100">
+        <table
+          className={`min-w-full shadow-md rounded-lg overflow-hidden border ${
+            isDark ? 'border-gray-600' : 'border-gray-200'
+          }`}
+          style={{
+            backgroundColor: isDark
+              ? theme.palette.background.paper
+              : theme.palette.background.default,
+            color: theme.palette.text.primary
+          }}
+        >
+          <thead
+            className={`${isDark ? 'bg-gray-800' : 'bg-gray-100'}`}
+            style={{ color: isDark ? '#fff' : '#000' }}
+          >
             <tr>
               <th className="px-4 py-2 text-left">Name</th>
               <th className="px-4 py-2 text-left">Email</th>
@@ -55,6 +74,7 @@ const StudentList = () => {
               <th className="px-4 py-2 text-left">CF Handle</th>
               <th className="px-4 py-2 text-right">Current Rating</th>
               <th className="px-4 py-2 text-right">Max Rating</th>
+              <th className="px-4 py-2 text-center">Reminders</th>
               <th className="px-4 py-2 text-center">Actions</th>
             </tr>
           </thead>
@@ -63,6 +83,7 @@ const StudentList = () => {
               <StudentRow
                 key={student._id}
                 student={student}
+                isDark={isDark}
               />
             ))}
           </tbody>

@@ -42,7 +42,7 @@ async function storeSubmissions(studentId, submissions) {
     problemId: `${s.problem.contestId}-${s.problem.index}`,
     contestId: s.problem.contestId,
     index: s.problem.index,
-    name: s.problem.name,
+    problemName: s.problem.name,
     rating: s.problem.rating,
     verdict: s.verdict,
     creationTimeSeconds: s.creationTimeSeconds
@@ -86,7 +86,7 @@ async function generateProblemStats(studentId, fromDate, toDate, rangeLabel) {
       totalProblemsSolved: total,
       averageRating: avgRating,
       averageProblemsPerDay: avgPerDay,
-      mostDifficultProblem: { name: hardest.name, rating: hardest.rating },
+      mostDifficultProblem: { problemName: hardest.problemName, rating: hardest.rating },
       ratingDistribution: dist
     },
     { upsert: true }

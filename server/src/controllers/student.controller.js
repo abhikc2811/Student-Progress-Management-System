@@ -52,3 +52,17 @@ export const deleteStudent = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+export const toggleReminder = async (req, res) => {
+  try {
+    const student = await Student.findById(req.params.id);
+    if (!student) return res.status(404).json({ error: 'Student not found' });
+
+    student.emailReminderEnabled = !student.emailReminderEnabled;
+    await student.save();
+
+    res.json({ message: 'Reminder status updated', updated: student.emailReminderEnabled });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};

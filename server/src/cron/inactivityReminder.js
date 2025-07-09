@@ -17,8 +17,13 @@ export const inactivityReminders = async () => {
       await sendEmail({
         to: stu.email,
         subject: 'Stay Active on Codeforces!',
-        text: `Hi ${stu.name},\n\nWe noticed you haven't solved any problems recently. Keep practicing to improve your skills!\n\nCheers,\nTrimTime Team`
+        text: `Hi ${stu.name},\n\nWe noticed you haven't solved any problems recently. Keep practicing to improve your skills!\n\nCheers,\SPMS Team`
       });
+
+      await Student.findByIdAndUpdate(stu._id, {
+        $inc: { emailRemindersSent: 1 }
+      });
+
       console.log(`Reminder sent to ${stu.email}`);
     } catch (err) {
       console.error(`Failed to send reminder to ${stu.email}:`, err.message);

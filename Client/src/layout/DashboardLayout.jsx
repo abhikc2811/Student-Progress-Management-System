@@ -58,7 +58,6 @@ const DashboardLayout = () => {
           sx={{
             flexGrow: 1,
             overflowY: 'auto',
-            p: 2,
             bgcolor: 'background.default',
           }}
         >

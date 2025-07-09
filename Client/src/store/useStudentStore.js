@@ -97,7 +97,13 @@ const useStudentStore = create((set, get) => ({
       toast.error('Failed to delete student');
       console.error('Error deleting student:', err);
     }
-  }
+  },
+
+  toggleReminder: async (id) => {
+    await axiosInstance.patch(`/students/${id}/toggle-reminder`);
+    await get().getAllStudents(); 
+  },
+
 }));
 
 export default useStudentStore;
