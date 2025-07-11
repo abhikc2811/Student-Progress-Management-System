@@ -23,7 +23,7 @@ const LoginPage = () => {
   const subTextColor = isDark ? 'text-[#a0a0bb]' : 'text-gray-500';
   const borderColor = isDark ? 'border-white' : 'border-gray-300';
   const inputBg = isDark ? 'bg-[#32344a]' : 'bg-white';
-  const placeholderColor = isDark ? 'placeholder-white' : 'placeholder-gray-500';
+  const placeholderColor = 'placeholder-gray-500';
   const leftBg = isDark ? 'bg-purple-800' : 'bg-white';
 
   return (
