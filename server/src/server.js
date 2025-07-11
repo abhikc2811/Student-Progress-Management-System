@@ -18,7 +18,7 @@ const PORT = process.env.PORT;
 const schedule = process.env.SYNC_CRON_SCHEDULE || '0 2 * * *';
 
 app.use(cors({
-    origin: 'http://localhost:5173',
+    origin: 'https://student-progress-management-system-murex.vercel.app',
     credentials: true
 }));
 
