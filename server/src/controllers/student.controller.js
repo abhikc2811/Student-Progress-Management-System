@@ -1,4 +1,7 @@
 import Student from '../models/student.model.js';
+import Contest from '../models/contest.model.js';
+import ProblemStats from '../models/problemStats.model.js';
+import Submission from '../models/submission.model.js';
 import { runCodeforcesSync } from '../cron/syncCodeforces.js';
 
 export const addStudent = async (req, res) => {
@@ -46,7 +49,14 @@ export const updateStudent = async (req, res) => {
 
 export const deleteStudent = async (req, res) => {
   try {
-    await Student.findByIdAndDelete(req.params.id);
+    const { id } = req.params;
+    const deleted = await Student.findByIdAndDelete(id);
+    if (!deleted) return res.status(404).json({ error: 'Student not found' });
+    await Promise.all([
+      Contest.deleteMany({ studentId: id }),
+      Submission.deleteMany({ studentId: id }),
+      ProblemStats.deleteMany({ studentId: id })
+    ]);
     res.json({ message: 'Student deleted successfully' });
   } catch (err) {
     res.status(500).json({ error: err.message });

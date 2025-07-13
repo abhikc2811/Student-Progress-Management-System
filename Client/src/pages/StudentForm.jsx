@@ -9,6 +9,8 @@ const StudentForm = ({ mode }) => {
   const { addStudent, updateStudent, getAllStudents } = useStudentStore();
   const theme = useTheme();
 
+  const [loading, setLoading] = useState(false);
+
   const [form, setForm] = useState({
     name: '',
     email: '',
@@ -36,8 +38,16 @@ const StudentForm = ({ mode }) => {
   const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value });
   const handleSubmit = async e => {
     e.preventDefault();
-    if (mode === 'create') await addStudent(form, () => navigate('/students'));
-    else await updateStudent(id, form, navigate('/students'));
+    setLoading(true);
+    try {
+      if (mode === 'create') {
+        await addStudent(form, () => navigate('/students'));
+      } else {
+        await updateStudent(id, form, () => navigate('/students'));
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Define colors based on theme mode
@@ -76,11 +86,8 @@ const StudentForm = ({ mode }) => {
                 border: `1px solid ${borderColor}`,
                 backgroundColor,
                 color: inputTextColor,
-                // placeholder styles using ::placeholder pseudo-element workaround:
-                // We need to inject a style tag or use CSS classes for placeholder, so here is a simple trick:
               }}
               className="placeholder-opacity-100"
-              // To set placeholder color inline, we need a small hack below
             />
             <style>
               {`
@@ -94,9 +101,16 @@ const StudentForm = ({ mode }) => {
         ))}
         <button
           type="submit"
-          className="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md transition-colors duration-200"
+          disabled={loading}
+          className={`w-full py-2 text-white font-medium rounded-md transition-colors duration-200 ${
+            loading
+              ? 'bg-blue-400 cursor-not-allowed'
+              : 'bg-blue-600 hover:bg-blue-700'
+          }`}
         >
-          {mode === 'create' ? 'Create Student' : 'Update Student'}
+          {loading
+            ? mode === 'create' ? 'Adding...' : 'Updating...'
+            : mode === 'create' ? 'Add Student' : 'Update Student'}
         </button>
       </form>
     </div>

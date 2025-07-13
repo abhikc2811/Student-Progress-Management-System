@@ -27,28 +27,39 @@ async function storeSubmissions(studentId, submissions) {
   const accepted = submissions.filter(s => s.verdict === 'OK');
 
   if (accepted.length > 0) {
-    const latest = accepted.reduce((latest, s) =>
-      s.creationTimeSeconds > latest.creationTimeSeconds ? s : latest
+    const latest = accepted.reduce((a, b) =>
+      b.creationTimeSeconds > a.creationTimeSeconds ? b : a
     );
-    const latestDate = new Date(latest.creationTimeSeconds * 1000);
-
     await Student.findByIdAndUpdate(studentId, {
-      lastSubmissionDate: latestDate
+      lastSubmissionDate: new Date(latest.creationTimeSeconds * 1000)
     });
   }
   
-  const docs = accepted.map(s => ({
-    studentId,
-    problemId: `${s.problem.contestId}-${s.problem.index}`,
-    contestId: s.problem.contestId,
-    index: s.problem.index,
-    problemName: s.problem.name,
-    rating: s.problem.rating,
-    verdict: s.verdict,
-    creationTimeSeconds: s.creationTimeSeconds
+  const ops = accepted.map(s => ({
+    updateOne: {
+      filter: {
+        studentId,
+        problemId: `${s.problem.contestId}-${s.problem.index}`
+      },
+      update: {
+        $setOnInsert: {
+          studentId,
+          problemId: `${s.problem.contestId}-${s.problem.index}`,
+          contestId: s.problem.contestId,
+          index: s.problem.index,
+          name: s.problem.name,       // renamed field
+          rating: s.problem.rating,
+          verdict: s.verdict,
+          creationTimeSeconds: s.creationTimeSeconds
+        }
+      },
+      upsert: true
+    }
   }));
-  await Submission.insertMany(docs, { ordered: false }).catch(() => {});
 
+  if (ops.length) {
+    await Submission.bulkWrite(ops, { ordered: false });
+  }
 }
 
 async function generateProblemStats(studentId, fromDate, toDate, rangeLabel) {
@@ -62,16 +73,23 @@ async function generateProblemStats(studentId, fromDate, toDate, rangeLabel) {
 
   if (!subs.length) return;
 
+  const ratedSubs   = subs.filter(s => typeof s.rating === 'number');
+  const unratedSubs = subs.length - ratedSubs.length;
+
   const total = subs.length;
-  const sumRatings = subs.reduce((sum, s) => sum + (s.rating || 0), 0);
-  const avgRating = sumRatings / total;
+  const avgRating = ratedSubs.length > 0
+    ? ratedSubs.reduce((sum, s) => sum + s.rating, 0) / ratedSubs.length
+    : 0;
+
   const days = (toDate - fromDate) / (1000 * 60 * 60 * 24);
   const avgPerDay = total / (days || 1);
 
-  const hardest = subs.reduce((max, s) => (s.rating > (max.rating || 0) ? s : max), { rating: 0 });
+  const hardest = ratedSubs.length > 0
+    ? ratedSubs.reduce((max, s) => s.rating > max.rating ? s : max, ratedSubs[0])
+    : { name: 'No rated solves', rating: null };
 
   const dist = subs.reduce((map, s) => {
-    const key = String(s.rating || 'unrated');
+    const key = (typeof s.rating === 'number') ? String(s.rating) : 'unrated';
     map[key] = (map[key] || 0) + 1;
     return map;
   }, {});
@@ -86,7 +104,7 @@ async function generateProblemStats(studentId, fromDate, toDate, rangeLabel) {
       totalProblemsSolved: total,
       averageRating: avgRating,
       averageProblemsPerDay: avgPerDay,
-      mostDifficultProblem: { problemName: hardest.problemName, rating: hardest.rating },
+      mostDifficultProblem: { name: hardest.name, rating: hardest.rating },
       ratingDistribution: dist
     },
     { upsert: true }

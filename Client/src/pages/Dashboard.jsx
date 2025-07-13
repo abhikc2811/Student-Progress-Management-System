@@ -124,7 +124,11 @@ const Dashboard = () => {
         <button
           onClick={handleManualSync}
           disabled={syncing}
-          className={`px-4 py-2 ${syncing ? 'bg-blue-400' : 'bg-blue-600'} text-white rounded hover:bg-blue-700`}
+          className={`px-4 py-2 text-white rounded transition-all duration-200 ${
+            syncing
+              ? 'bg-blue-400 cursor-not-allowed'
+              : 'bg-blue-600 hover:bg-blue-700 cursor-pointer'
+          }`}
         >
           {syncing ? '🔄 Syncing...' : '🔄 Manual Sync'}
         </button>
